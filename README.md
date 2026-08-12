@@ -1,178 +1,125 @@
 # 🔥 Calories Burnt Prediction – End-to-End MLOps on Databricks
 
-> An end-to-end machine learning and MLOps project for predicting calories burned during physical activity using Databricks, MLflow, Unity Catalog, and Databricks Model Serving.
+> An end-to-end machine learning and MLOps project for predicting calories burned during physical activity using **Azure Databricks, Unity Catalog, MLflow, and Databricks Model Serving**.
 
 ---
 
 ## 📑 Project Index
 
+- [🔥 Calories Burnt Prediction – End-to-End MLOps on Databricks](#-calories-burnt-prediction--end-to-end-mlops-on-databricks)
+  - [📑 Project Index](#-project-index)
 - [📌 Project Overview](#-project-overview)
 - [🎯 Objectives](#-objectives)
 - [🏗️ Architecture](#️-architecture)
+    - [End-to-End Flow](#end-to-end-flow)
 - [🛠️ Technologies Used](#️-technologies-used)
+- [☁️ Azure \& Databricks Services Used](#️-azure--databricks-services-used)
 - [📊 Dataset](#-dataset)
+    - [Input Features](#input-features)
+    - [Target Variable](#target-variable)
 - [🔄 MLOps Workflow](#-mlops-workflow)
   - [1. Data Ingestion](#1-data-ingestion)
   - [2. Development](#2-development)
   - [3. MLflow Experiment Tracking](#3-mlflow-experiment-tracking)
   - [4. Model Logging](#4-model-logging)
   - [5. Model Registry](#5-model-registry)
+    - [Registered Model](#registered-model)
   - [6. Model Serving](#6-model-serving)
+    - [Serving Endpoint](#serving-endpoint)
   - [7. Inference](#7-inference)
+    - [Prediction Validation](#prediction-validation)
 - [📈 Model Results](#-model-results)
 - [🚀 Deployment](#-deployment)
 - [📂 Repository Structure](#-repository-structure)
 - [▶️ How to Run](#️-how-to-run)
+  - [Prerequisites](#prerequisites)
+  - [Step 1 — Prepare the Databricks Environment](#step-1--prepare-the-databricks-environment)
+  - [Step 2 — Upload the Dataset](#step-2--upload-the-dataset)
+  - [Step 3 — Import the Notebook](#step-3--import-the-notebook)
+  - [Step 4 — Configure the Dataset Path](#step-4--configure-the-dataset-path)
+  - [Step 5 — Run the Notebook](#step-5--run-the-notebook)
+  - [Step 6 — Deploy the Model](#step-6--deploy-the-model)
+  - [Step 7 — Test the Endpoint](#step-7--test-the-endpoint)
 - [🔮 Future Improvements](#-future-improvements)
+- [🧠 Skills Demonstrated](#-skills-demonstrated)
 - [📜 License](#-license)
+- [👤 Author](#-author)
 
 ---
 
 # 📌 Project Overview
 
-This project demonstrates an **end-to-end Machine Learning and MLOps workflow** for predicting calories burned during physical activity using **Azure Databricks, Unity Catalog, MLflow, and Databricks Model Serving**.
+This project demonstrates an **end-to-end Machine Learning and MLOps workflow** for predicting calories burned during physical activity using the Azure Databricks ecosystem.
 
-The project follows the complete machine learning lifecycle, starting with dataset storage and ingestion, followed by data preparation, model development, experiment tracking, model logging, model registration, model serving, and inference.
+The project covers the complete lifecycle of a machine learning model, starting with dataset storage and ingestion, followed by data preparation, model development, experiment tracking, model logging, model registration, model serving, and real-time inference.
 
-The machine learning component focuses on predicting calories burned using exercise and physiological attributes such as:
+The machine learning solution uses exercise and physiological attributes such as gender, age, height, weight, exercise duration, heart rate, and body temperature to predict calories burned.
 
-- Gender
-- Age
-- Height
-- Weight
-- Exercise Duration
-- Heart Rate
-- Body Temperature
+Multiple regression models are trained and evaluated. **MLflow** is used to track experiments, parameters, metrics, runs, and model artifacts. After model comparison, **XGBoost** is selected as the final model.
 
-Multiple regression algorithms are trained and evaluated during the experimentation stage. **MLflow** is used to track experiments, parameters, metrics, and model artifacts.
+The selected model is logged using MLflow, registered in the **Unity Catalog Model Registry**, and deployed through **Databricks Model Serving**.
 
-After comparing the trained models, **XGBoost** is selected as the best-performing model. The selected model is logged with MLflow, registered in the **Unity Catalog Model Registry**, and deployed using **Databricks Model Serving**.
-
-The deployed model is then tested through a serving endpoint, and its prediction is compared with the local model prediction to validate the deployment.
+The deployed serving endpoint is then tested with sample input data. The serving prediction is compared with the local model prediction to validate that the deployed model produces a consistent result.
 
 ---
 
-# 🎯 Business Problem
+# 🎯 Objectives
 
-Calories burned during exercise depend on several physiological and activity-related factors. Estimating calorie expenditure manually from these variables can be difficult.
+The main objectives of the project are:
 
-The objective of this project is to build a machine learning regression system capable of predicting calories burned based on an individual's physical characteristics and exercise conditions.
-
-The solution uses historical exercise data to learn the relationship between the input features and calorie expenditure.
-
-### Key Objectives
-
-- Store project datasets using **Unity Catalog Volumes**
-- Process and prepare the data using **Azure Databricks**
+- Store and access datasets using **Unity Catalog Volumes**
+- Perform data preparation and development in **Azure Databricks**
 - Train multiple regression models
-- Evaluate and compare model performance
-- Track machine learning experiments using **MLflow**
-- Select the best-performing model
+- Evaluate models using MAE, RMSE, and R²
+- Track experiments using **MLflow**
+- Compare model performance and select the best model
 - Log the selected model using MLflow
 - Register the model in **Unity Catalog Model Registry**
 - Deploy the registered model using **Databricks Model Serving**
 - Perform real-time inference
-- Validate the deployed model against the local model
+- Validate the serving endpoint against the local model
 
 ---
 
-# 🏗️ Solution Architecture
+# 🏗️ Architecture
 
-The project is built around the following core components:
+The project is organized around the following core components:
 
-### 📂 Unity Catalog Volume
+- **Unity Catalog Volume** – stores the raw datasets
+- **Databricks Notebook** – performs data preparation, experimentation, training, and evaluation
+- **MLflow** – tracks experiments and logs models
+- **Unity Catalog Model Registry** – registers and versions the selected model
+- **Databricks Model Serving** – deploys the registered model
+- **Serving Endpoint** – provides real-time predictions
 
-The raw project datasets are stored in a **Unity Catalog Volume** within Databricks.
+### End-to-End Flow
 
-The Volume provides the storage location from which the datasets are accessed during model development.
-
-### 📒 Azure Databricks Notebook
-
-The Databricks Notebook serves as the main development environment for:
-
-- Loading the datasets
-- Data preparation
-- Exploratory analysis
-- Model development
-- Model training
-- Model evaluation
-- MLflow integration
-- Model logging
-- Model registration
-- Serving validation
-
-### 📊 MLflow
-
-MLflow is used to manage the machine learning experimentation and model lifecycle.
-
-It provides:
-
-- Experiment tracking
-- Run tracking
-- Parameter logging
-- Metric logging
-- Model artifact logging
-- Logged model management
-
-### 🗂️ Unity Catalog Model Registry
-
-The selected model is registered in Unity Catalog after being logged with MLflow.
-
-The registry provides a managed location for the model and its versions before deployment.
-
-### 🚀 Databricks Model Serving
-
-The registered model is deployed using Databricks Model Serving.
-
-The deployed model is exposed through a serving endpoint that can receive prediction requests.
-
-### 🔮 Inference
-
-The serving endpoint accepts the required input features and returns the predicted number of calories burned.
-
----
-
-# 🖼️ Architecture Diagram
-
-![Calories Burnt MLOps Architecture](01-ARCHITECTURE/calories-burnt-mlops-architecture.png)
-
-The implemented architecture can be summarized as:
-
-```
+```text
 Raw Datasets
-     │
-     ▼
+     ↓
 Unity Catalog Volume
-     │
-     ▼
+     ↓
 Databricks Notebook
-     │
-     ▼
-Data Preparation & Model Development
-     │
-     ▼
-Multiple ML Models
-     │
-     ▼
+     ↓
+Data Preparation
+     ↓
+Model Training
+     ↓
 MLflow Experiment Tracking
-     │
-     ▼
+     ↓
 Model Comparison
-     │
-     ▼
+     ↓
 Best Model – XGBoost
-     │
-     ▼
+     ↓
 MLflow Model Logging
-     │
-     ▼
+     ↓
 Unity Catalog Model Registry
-     │
-     ▼
+     ↓
 Databricks Model Serving
-     │
-     ▼
+     ↓
 Inference Endpoint
+     ↓
+Prediction
 ```
 
 ---
@@ -185,7 +132,7 @@ Inference Endpoint
 | **Azure Databricks** | Machine learning development and execution |
 | **Python** | Data processing and machine learning |
 | **Pandas** | Dataset loading and manipulation |
-| **Scikit-learn** | Machine learning models and evaluation |
+| **Scikit-learn** | Regression models and evaluation |
 | **XGBoost** | Final selected regression model |
 | **MLflow** | Experiment tracking and model logging |
 | **Unity Catalog** | Data and model governance |
@@ -207,93 +154,18 @@ Inference Endpoint
 | **Unity Catalog Model Registry** | Registration and versioning of the selected model |
 | **Databricks Model Serving** | Deployment of the registered model for real-time inference |
 
-
-# 🎯 Objectives
-
-The primary objective of this project is to build and deploy a machine learning model that predicts calories burned during physical activity while implementing the complete MLOps lifecycle using Azure Databricks.
-
-The project focuses on the following objectives:
-
-### 📂 Data Management
-
-- Store the project datasets in a **Unity Catalog Volume**
-- Access the datasets from the Databricks environment
-- Prepare the data for machine learning
-
-### 🤖 Machine Learning
-
-- Develop a regression-based prediction system
-- Train multiple machine learning algorithms
-- Evaluate the models using appropriate regression metrics
-- Compare model performance
-- Select the best-performing model
-
-### 📊 Experiment Tracking
-
-- Use **MLflow** to track machine learning experiments
-- Record model parameters
-- Record evaluation metrics
-- Track individual model runs
-- Log trained model artifacts
-
-### 🗂️ Model Management
-
-- Log the selected model using MLflow
-- Register the selected model in **Unity Catalog Model Registry**
-- Manage the registered model and its version
-
-### 🚀 Model Deployment
-
-- Deploy the registered model using **Databricks Model Serving**
-- Create a serving endpoint for the trained model
-- Verify that the endpoint reaches a ready state
-
-### 🔮 Model Inference
-
-- Send prediction requests to the deployed serving endpoint
-- Generate calories-burned predictions
-- Compare the serving endpoint prediction with the local model prediction
-- Validate the deployed model
-
-### 🔄 Overall MLOps Objective
-
-The overall objective is to demonstrate how a machine learning model can move through a practical MLOps lifecycle:
-
-```text
-Data
-  ↓
-Development
-  ↓
-Experimentation
-  ↓
-Model Selection
-  ↓
-Model Logging
-  ↓
-Model Registration
-  ↓
-Model Serving
-  ↓
-Inference
-```
+---
 
 # 📊 Dataset
 
-The project uses two datasets containing exercise and physiological information required for predicting calories burned.
+The project uses two datasets:
 
-### Dataset Files
+- `calories.csv`
+- `exercise.csv`
 
-```text
-02-DATASET/
-│
-├── calories.csv
-├── exercise.csv
-└── README.md
-```
+The datasets contain exercise and physiological information used to predict calories burned.
 
-### 📄 `exercise.csv`
-
-The exercise dataset contains the input features used by the machine learning models.
+### Input Features
 
 | Feature | Description |
 |---|---|
@@ -301,97 +173,44 @@ The exercise dataset contains the input features used by the machine learning mo
 | `Age` | Age of the individual |
 | `Height` | Height of the individual |
 | `Weight` | Weight of the individual |
-| `Duration` | Duration of the exercise session |
+| `Duration` | Exercise duration |
 | `Heart_Rate` | Heart rate during exercise |
 | `Body_Temp` | Body temperature during exercise |
 
-### 📄 `calories.csv`
-
-The calories dataset contains the target variable representing the calories burned during the exercise session.
-
-| Column | Description |
-|---|---|
-| `User_ID` | Identifier of the individual |
-| `Calories` | Number of calories burned |
-
-The two datasets are combined using the common user identifier to create the final dataset used for machine learning.
-
-### 🎯 Target Variable
-
-The target variable for the prediction task is:
+### Target Variable
 
 ```text
 Calories
 ```
 
-The machine learning models learn the relationship between the exercise and physiological features and the corresponding calories burned.
+The two datasets are combined using the common user identifier to create the dataset used for model development.
 
-### 📦 Data Storage
-
-The raw datasets are stored in a **Unity Catalog Volume** within Azure Databricks.
-
-```text
-Unity Catalog
-      │
-      ▼
-Catalog
-      │
-      ▼
-Schema
-      │
-      ▼
-Volume
-      │
-      ├── calories.csv
-      │
-      └── exercise.csv
-```
-
-The Databricks Notebook accesses the datasets from the Volume and loads them for further processing and model development.
-
-# 🔄 MLOps Workflow
-
-The project follows a structured MLOps workflow that takes the machine learning solution from raw data ingestion to a deployed model capable of serving predictions.
-
-The workflow is divided into the following phases:
-
-```text
-01. Data Ingestion
-        ↓
-02. Development
-        ↓
-03. MLflow Experiment Tracking
-        ↓
-04. Model Logging
-        ↓
-05. Model Registry
-        ↓
-06. Model Serving
-        ↓
-07. Inference
-```
-
-Each phase represents a specific stage in the machine learning lifecycle implemented in this project.
+The raw files are stored in a **Unity Catalog Volume** and accessed from the Databricks Notebook.
 
 ---
 
-## 1. 📥 Data Ingestion
+# 🔄 MLOps Workflow
 
-The raw `calories.csv` and `exercise.csv` datasets are stored in a **Unity Catalog Volume** within Azure Databricks.
+## 1. Data Ingestion
 
-The Databricks Notebook accesses the datasets from the Volume and loads them for further processing.
+The raw CSV datasets are stored in a Unity Catalog Volume within Azure Databricks.
+
+The Databricks Notebook loads the datasets from the Volume and prepares them for further processing.
 
 ```text
-Raw CSV Files
-      ↓
+calories.csv
+     │
+exercise.csv
+     │
+     ▼
 Unity Catalog Volume
-      ↓
+     │
+     ▼
 Databricks Notebook
-      ↓
+     │
+     ▼
 DataFrames
 ```
-
-This stage establishes the data source used by the machine learning workflow.
 
 📁 Related files:
 
@@ -399,11 +218,9 @@ This stage establishes the data source used by the machine learning workflow.
 
 ---
 
-## 2. 📒 Development
+## 2. Development
 
-The machine learning workflow is implemented in a **Databricks Notebook**.
-
-The notebook performs the core development activities required to prepare the data and build the prediction models.
+The Databricks Notebook is used as the main development environment.
 
 The development stage includes:
 
@@ -412,39 +229,36 @@ The development stage includes:
 - Data preparation
 - Exploratory analysis
 - Feature preparation
-- Train-test data preparation
 - Model training
 - Model evaluation
 
 📁 Related files:
 
-[`05-Development/`](05-Development/)
-
 [`03-NOTEBOOKS/`](03-NOTEBOOKS/)
+
+[`05-Development/`](05-Development/)
 
 ---
 
-## 3. 📈 MLflow Experiment Tracking
+## 3. MLflow Experiment Tracking
 
-Multiple regression models are trained and tracked using **MLflow**.
+Five regression models are trained and evaluated:
 
-The models evaluated during experimentation include:
+1. Linear Regression
+2. Decision Tree
+3. Random Forest
+4. Gradient Boosting
+5. XGBoost
 
-- Linear Regression
-- Decision Tree
-- Random Forest
-- Gradient Boosting
-- XGBoost
+Each model is tracked as an MLflow run.
 
-Each model is tracked as an MLflow run along with its relevant parameters and evaluation metrics.
-
-The primary evaluation metrics used are:
+The main evaluation metrics are:
 
 - **MAE — Mean Absolute Error**
 - **RMSE — Root Mean Squared Error**
 - **R² — Coefficient of Determination**
 
-The tracked runs allow the performance of the different models to be compared and the best-performing model to be selected.
+MLflow records the relevant model parameters, metrics, run information, and artifacts.
 
 📁 Related files:
 
@@ -452,21 +266,23 @@ The tracked runs allow the performance of the different models to be compared an
 
 ---
 
-## 4. 📦 Model Logging
+## 4. Model Logging
 
-After evaluating the different models, **XGBoost** is selected as the best-performing model.
+After comparing the trained models, **XGBoost** is selected as the final model.
 
-The selected XGBoost model is logged using **MLflow**.
+The selected XGBoost model is logged using MLflow.
 
-The logged model contains the model information and artifacts required for subsequent model management and deployment.
+The logged model contains the model artifact and supporting MLflow information required for subsequent registration and deployment.
 
 ```text
-Trained XGBoost Model
-        ↓
-MLflow
-        ↓
+Best Model
+    ↓
+XGBoost
+    ↓
+MLflow Model Logging
+    ↓
 Logged Model
-        ↓
+    ↓
 Model Artifacts
 ```
 
@@ -476,17 +292,17 @@ Model Artifacts
 
 ---
 
-## 5. 🗂️ Model Registry
+## 5. Model Registry
 
-The logged XGBoost model is registered in the **Unity Catalog Model Registry**.
+The logged XGBoost model is registered in the Unity Catalog Model Registry.
 
-The registered model is:
+### Registered Model
 
 ```text
 databricks00.default.calories_burnt_predictor
 ```
 
-The Model Registry provides a managed location for the selected model and its version before deployment.
+The registered model provides a managed location for the selected model and its version before deployment.
 
 ```text
 MLflow Logged Model
@@ -504,29 +320,27 @@ Model Version
 
 ---
 
-## 6. 🚀 Model Serving
+## 6. Model Serving
 
-The registered model is deployed using **Databricks Model Serving**.
+The registered XGBoost model is deployed using Databricks Model Serving.
 
-A serving endpoint is created for the registered model and configured to serve the selected model version.
-
-The serving endpoint used in the project is:
+### Serving Endpoint
 
 ```text
 calories-burnt-predictor
 ```
 
-The endpoint is verified until it reaches a ready state and can accept inference requests.
+The endpoint is configured to serve the registered model version and is verified until it reaches the **Ready** state.
 
 ```text
 Registered Model
-        ↓
+       ↓
 Model Version
-        ↓
+       ↓
 Databricks Model Serving
-        ↓
+       ↓
 calories-burnt-predictor
-        ↓
+       ↓
 Ready Endpoint
 ```
 
@@ -536,119 +350,35 @@ Ready Endpoint
 
 ---
 
-## 7. 🔮 Inference
+## 7. Inference
 
-Once the serving endpoint is ready, a sample input containing the required model features is sent to the endpoint.
+Once the serving endpoint is ready, a sample input is sent to the deployed model.
 
-The endpoint processes the input using the deployed XGBoost model and returns the predicted number of calories burned.
+The endpoint returns the predicted number of calories burned.
 
-The deployed prediction is then compared with the prediction generated by the local model.
+The serving prediction is then compared with the local model prediction.
 
-The validation produced:
+### Prediction Validation
 
 ```text
-Local Model Prediction     : 233.57025
-Serving Endpoint Prediction: 233.570426...
-Difference                  : ~0.00017
+Local Model Prediction      : 233.57025
+Serving Endpoint Prediction : 233.570426...
+Difference                   : ~0.00017
 ```
 
-The very small difference indicates that the deployed serving endpoint produced a prediction consistent with the local model.
+The very small difference demonstrates that the deployed endpoint produces a prediction consistent with the local model.
 
 📁 Related files:
 
 [`10-Inference/`](10-Inference/)
 
-# 📈 Model Development & Experimentation
-
-The model development phase focuses on training multiple regression algorithms and evaluating their ability to predict calories burned.
-
-The experiments are performed in the **Azure Databricks Notebook**, with **MLflow** used to track the individual model runs and their evaluation results.
-
 ---
 
-## 🤖 Models Trained
+# 📈 Model Results
 
-Five regression algorithms were trained and evaluated:
+The models were evaluated using MAE, RMSE, and R².
 
-| Model | Description |
-|---|---|
-| **Linear Regression** | Baseline linear regression model |
-| **Decision Tree** | Tree-based regression model |
-| **Random Forest** | Ensemble of multiple decision trees |
-| **Gradient Boosting** | Sequential boosting-based regression model |
-| **XGBoost** | Gradient boosting model optimized for performance |
-
-Each model is trained using the prepared dataset and evaluated using the same evaluation metrics.
-
----
-
-## 📊 Model Evaluation
-
-The models are evaluated using three regression metrics:
-
-### MAE — Mean Absolute Error
-
-MAE measures the average absolute difference between the actual and predicted calorie values.
-
-```text
-MAE = Average(|Actual - Predicted|)
-```
-
-A lower MAE indicates better prediction accuracy.
-
-### RMSE — Root Mean Squared Error
-
-RMSE measures the square root of the average squared prediction error.
-
-```text
-RMSE = √(Average((Actual - Predicted)²))
-```
-
-A lower RMSE indicates better model performance and gives greater weight to larger prediction errors.
-
-### R² — Coefficient of Determination
-
-R² measures how well the model explains the variation in the target variable.
-
-A value closer to `1` indicates a better fit to the evaluated data.
-
----
-
-## 🧪 MLflow Experiment Tracking
-
-Each model training process is recorded as an MLflow run.
-
-The MLflow experiment stores information such as:
-
-- Model parameters
-- MAE
-- RMSE
-- R²
-- Model artifacts
-- Run information
-
-This allows all trained models to be evaluated and compared within the same experiment.
-
-```text
-                 MLflow Experiment
-                        │
-       ┌────────────────┼────────────────┐
-       │                │                │
-       ▼                ▼                ▼
-   Parameters        Metrics         Artifacts
-       │                │                │
-       └────────────────┼────────────────┘
-                        ▼
-                 Model Comparison
-```
-
----
-
-## 🏆 Model Selection
-
-After evaluating all five models, **XGBoost** was selected as the final model for the MLOps pipeline.
-
-The selected model achieved the following evaluation results:
+The final XGBoost evaluation results were:
 
 | Metric | XGBoost |
 |---|---:|
@@ -656,266 +386,206 @@ The selected model achieved the following evaluation results:
 | **RMSE** | **1.6728** |
 | **R²** | **0.9993** |
 
-The XGBoost model was therefore selected for the subsequent **model logging, model registration, and model serving** stages.
+Based on the experimentation results, **XGBoost** was selected as the final model for logging, registration, and deployment.
+
+> The reported metrics represent the evaluation performed in this project and should not be interpreted as a guarantee of performance on unseen production data.
 
 ---
 
-## 🔄 Experimentation Flow
+# 🚀 Deployment
+
+The final model deployment flow is:
 
 ```text
-Prepared Dataset
-       │
-       ▼
-┌──────────────────────────────────────┐
-│          Model Training              │
-├──────────────────────────────────────┤
-│ Linear Regression                    │
-│ Decision Tree                        │
-│ Random Forest                        │
-│ Gradient Boosting                    │
-│ XGBoost                              │
-└──────────────────┬───────────────────┘
-                   │
-                   ▼
-           MLflow Experiment
-              Tracking
-                   │
-                   ▼
-           Metric Comparison
-                   │
-                   ▼
-          Select Best Model
-                   │
-                   ▼
-               XGBoost
-```
-
----
-
-## 📁 Project Evidence
-
-The screenshots related to model experimentation, MLflow runs, and model comparison are available in:
-
-[`06-MLflow-Experiment/`](06-MLflow-Experiment/)
-
-The model development and training implementation is available in:
-
-[`03-NOTEBOOKS/`](03-NOTEBOOKS/)
-
-
-# 📦 Model Logging
-
-After comparing the trained regression models, **XGBoost** was selected as the best-performing model and was used for the remaining MLOps lifecycle.
-
-The selected model was logged using **MLflow**, creating a managed MLflow model artifact that can be used for subsequent model registration and deployment.
-
----
-
-## 🎯 Why Model Logging?
-
-Model logging captures the trained model together with the information required to load and use it later.
-
-Instead of keeping the trained model only in the notebook session, MLflow stores the model as a persistent artifact associated with the corresponding experiment run.
-
-This allows the model to be retrieved independently of the training process.
-
----
-
-## 🔄 Model Logging Workflow
-
-```text
-Best Performing Model
-        │
-        ▼
-     XGBoost
-        │
-        ▼
-   MLflow Run
-        │
-        ▼
-   Log Model
-        │
-        ▼
- Logged Model Artifact
-        │
-        ▼
-Ready for Model Registration
-```
-
----
-
-## 🧪 MLflow Logged Model
-
-The XGBoost model is logged under the MLflow run associated with the selected model.
-
-The logged model contains the model artifact and supporting MLflow model information required for loading and serving the model.
-
-The MLflow logged model includes artifacts such as:
-
-```text
-model/
-├── MLmodel
-├── model.pkl
-├── conda.yaml
-├── python_env.yaml
-├── requirements.txt
-├── input_example.json
-└── serving_input_example.json
-```
-
-These artifacts allow the model to be reproduced and loaded through MLflow without requiring the original training session.
-
----
-
-## 📊 Model Signature
-
-During model logging, MLflow captures the model input schema.
-
-The expected input features are:
-
-```text
-Gender
-Age
-Height
-Weight
-Duration
-Heart_Rate
-Body_Temp
-```
-
-The model signature helps ensure that inference requests contain the expected input columns and compatible data types.
-
----
-
-## 🔗 MLflow Model
-
-The logged XGBoost model is identified by its MLflow model ID and associated training run.
-
-This logged model is subsequently used as the source for registration in the **Unity Catalog Model Registry**.
-
-```text
-MLflow Experiment
-       │
-       ▼
-Selected XGBoost Run
-       │
-       ▼
+XGBoost Model
+     ↓
 MLflow Logged Model
-       │
-       ▼
+     ↓
 Unity Catalog Model Registry
-```
-
----
-
-## 📸 Project Evidence
-
-The screenshots demonstrating the XGBoost MLflow run, model metrics, and logged model artifacts are available in:
-
-[`07-Model-Logging/`](07-Model-Logging/)
-
-# 🗂️ Model Registry
-
-After logging the selected XGBoost model with MLflow, the model is registered in the **Unity Catalog Model Registry**.
-
-Model registration provides a centralized location to manage the trained model and its versions before deployment.
-
----
-
-## 🎯 Registered Model
-
-The selected model was registered with the following three-level Unity Catalog model name:
-
-```text
-databricks00.default.calories_burnt_predictor
-```
-
-Where:
-
-```text
-Catalog
-   ↓
-databricks00
-
-Schema
-   ↓
-default
-
-Registered Model
-   ↓
-calories_burnt_predictor
-```
-
----
-
-## 🔄 Model Registration Workflow
-
-```text
-MLflow Logged Model
-        │
-        ▼
-Unity Catalog
-        │
-        ▼
-Catalog: databricks00
-        │
-        ▼
-Schema: default
-        │
-        ▼
-calories_burnt_predictor
-        │
-        ▼
+     ↓
 Registered Model Version
+     ↓
+Databricks Model Serving
+     ↓
+calories-burnt-predictor
+     ↓
+Inference Request
+     ↓
+Prediction Response
 ```
 
----
+The serving endpoint was successfully brought to the **Ready** state and tested using a sample prediction request.
 
-## 📦 Model Version
-
-The registered model is maintained as a versioned model in Unity Catalog.
-
-The model version represents a specific trained model artifact that can be selected for deployment.
-
-This creates a clear separation between:
-
-- The model produced during experimentation
-- The registered model
-- The specific model version used for deployment
+The deployment endpoint URL is not included in this repository because it is specific to the Databricks workspace environment.
 
 ---
 
-## 🔗 MLflow to Unity Catalog
-
-The model lifecycle at this stage can be represented as:
+# 📂 Repository Structure
 
 ```text
-MLflow Experiment
-        │
-        ▼
-XGBoost Run
-        │
-        ▼
-Logged Model
-        │
-        ▼
-Unity Catalog Model Registry
-        │
-        ▼
-calories_burnt_predictor
-        │
-        ▼
-Model Version
+Calories-Burnt-Prediction-MLOps/
+│
+├── 01-ARCHITECTURE/
+│   └── calories-burnt-mlops-architecture.png
+│
+├── 02-DATASET/
+│   ├── calories.csv
+│   └── exercise.csv
+│
+├── 03-NOTEBOOKS/
+│   └── Calories_Burnt_MLOps.ipynb
+│
+├── 04-Data-Ingestion/
+│   └── Project screenshots
+│
+├── 05-Development/
+│   └── Project screenshots
+│
+├── 06-MLflow-Experiment/
+│   └── Project screenshots
+│
+├── 07-Model-Logging/
+│   └── Project screenshots
+│
+├── 08-Model-Registry/
+│   └── Project screenshots
+│
+├── 09-Model-Serving/
+│   └── Project screenshots
+│
+├── 10-Inference/
+│   └── Project screenshots
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
-
-The registered model is then used as the source model for the **Databricks Model Serving** stage.
 
 ---
 
-## 📸 Project Evidence
+# ▶️ How to Run
 
-Screenshots demonstrating the registered model and its details are available in:
+## Prerequisites
 
-[`08-Model-Registry/`](08-Model-Registry/)
+- Microsoft Azure account
+- Azure Databricks workspace
+- Unity Catalog enabled
+- Databricks compute resource
+- GitHub account
 
+## Step 1 — Prepare the Databricks Environment
 
+Create or access an Azure Databricks workspace with Unity Catalog enabled.
+
+Create the required catalog, schema, and Unity Catalog Volume.
+
+## Step 2 — Upload the Dataset
+
+Upload:
+
+```text
+calories.csv
+exercise.csv
+```
+
+to the Unity Catalog Volume.
+
+## Step 3 — Import the Notebook
+
+Import the notebook from:
+
+```text
+03-NOTEBOOKS/Calories_Burnt_MLOps.ipynb
+```
+
+into the Databricks workspace.
+
+## Step 4 — Configure the Dataset Path
+
+Update the Unity Catalog Volume path in the notebook if your catalog, schema, or Volume names differ from the environment used in this project.
+
+## Step 5 — Run the Notebook
+
+Execute the notebook sequentially to perform:
+
+```text
+Data Ingestion
+     ↓
+Data Preparation
+     ↓
+Model Training
+     ↓
+Model Evaluation
+     ↓
+MLflow Tracking
+     ↓
+Model Logging
+     ↓
+Model Registration
+```
+
+## Step 6 — Deploy the Model
+
+After registering the selected model, create a Databricks Model Serving endpoint using the registered model version.
+
+## Step 7 — Test the Endpoint
+
+Send a prediction request containing the required input features and verify the returned prediction.
+
+---
+
+# 🔮 Future Improvements
+
+The current implementation focuses on the core MLOps lifecycle from data ingestion through model serving and inference.
+
+Possible future improvements include:
+
+- Automated model retraining
+- Automated deployment pipelines
+- CI/CD integration
+- Data quality validation
+- Automated model evaluation gates
+- Model performance monitoring
+- Data and model drift detection
+- Scheduled batch inference
+- Integration with a frontend or application
+
+These improvements are outside the scope of the current implementation.
+
+---
+
+# 🧠 Skills Demonstrated
+
+This project demonstrates practical experience with:
+
+- Azure Databricks
+- Unity Catalog
+- Unity Catalog Volumes
+- Python
+- Pandas
+- Scikit-learn
+- XGBoost
+- Regression model development
+- Model evaluation
+- MLflow Experiment Tracking
+- MLflow Model Logging
+- Unity Catalog Model Registry
+- Model version management
+- Databricks Model Serving
+- REST-based inference
+- Model deployment validation
+- GitHub project organization
+
+---
+
+# 📜 License
+
+This project is licensed under the terms specified in the [`LICENSE`](LICENSE) file.
+
+---
+
+# 👤 Author
+
+**Sohail Akhter**
+
+Computer Science | Machine Learning & Data Engineering
