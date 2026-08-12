@@ -588,4 +588,4 @@ This project is licensed under the terms specified in the [`LICENSE`](LICENSE) f
 
 **Sohail Akhter**
 
-Computer Science | Machine Learning & Data Engineering
+Information Technology| Machine Learning & Data Engineering
